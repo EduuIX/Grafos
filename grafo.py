@@ -4,6 +4,9 @@ class Grafo():
     def __init__(self):
         self.matriz = []
         self.lista = {}
+
+        self.arestas = []
+        self.vertices = None
     
 
     def para_matriz(self, arestas, num_vertices):
@@ -87,10 +90,26 @@ class Grafo():
 
 
     def print_matriz(self):
-        print("Matriz de Adjacência:")
-        for row in self.matriz:
-            print(row)
+        print('\n\t=================================================================')
+        print("\t\t\t\tMatriz de Adjacência:")
+        print('\t=================================================================\n')
+        labels = [x for x in range(self.vertices)]
+        print(f'\t\t\t\t   {[x for x in labels]}'.replace('[', '').replace(']', '').replace(',', ' '))
+        for i, row in zip(labels, self.matriz):
+            print(f'\t\t\t\t{labels[i]} {row}')
+        print('\n\t=================================================================')
 
 
     def print_lista(self):
-        print("Lista de Adjacência:", self.lista)
+        print('\n\n\t=================================================================')
+        print("\t\t\t\tLista de Adjacência:")
+        print('\t=================================================================\n')
+        print(f'\t\t{self.lista}')
+        print('\n\t=================================================================')
+
+    def PRINT(self):
+        print(f'\nParâmetros de Entrada: \
+            \n\n\tArestas:{self.arestas} \
+            \n\tVértices: {self.vertices}')
+        self.print_matriz()
+        self.print_lista()
