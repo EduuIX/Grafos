@@ -1,82 +1,38 @@
-class Grafo():
-
+class Grafo:
 
     def __init__(self):
+
         self.matriz = []
         self.lista = {}
-
         self.arestas = []
         self.vertices = None
-    
 
     def para_matriz(self, arestas, num_vertices):
         """
-            Gera a matriz de adjacência de um grafo não direcionado a partir de uma lista de arestas.
+        Converte uma lista de arestas em uma matriz de adjacência.
 
-            Esta função cria uma matriz de adjacência representando um grafo não direcionado. A matriz de adjacência é uma forma de representar um grafo onde as linhas e colunas correspondem aos vértices, e os valores da matriz indicam a presença ou ausência de arestas entre os vértices.
+        Args:
+            arestas (list of tuples): Lista de arestas, onde cada aresta é representada por um tupla (u, v).
+            num_vertices (int): Número de vértices no grafo.
 
-            Parâmetros:
-            ----------
-            arestas : list of tuples
-                Uma lista de tuplas, onde cada tupla (u, v) representa uma aresta entre os vértices u e v no grafo.
-            
-            num_vertices : int
-                O número de vértices no grafo. A matriz de adjacência gerada terá dimensões num_vertices x num_vertices.
-
-            Retorna:
-            --------
-            list of list of int
-                A matriz de adjacência do grafo. Uma lista de listas, onde cada sublista representa uma linha da matriz. Um valor 1 na posição [i][j] indica a presença de uma aresta entre os vértices i e j, e 0 indica ausência de aresta.
-
-            Exemplo:
-            --------
-            >>> arestas = [(0, 1), (0, 2), (1, 2), (2, 3)]
-            >>> num_vertices = 4
-            >>> grafo = Grafo()
-            >>> matriz_adj = grafo.matriz(arestas, num_vertices)
-            >>> print(matriz_adj)
-            [[0, 1, 1, 0],
-            [1, 0, 1, 0],
-            [1, 1, 0, 1],
-            [0, 0, 1, 0]]
+        Returns:
+            list: Matriz de adjacência resultante.
         """
-
         matriz = [[0] * num_vertices for _ in range(num_vertices)]
         for u, v in arestas:
             matriz[u][v] = 1
-            matriz[v][u] = 1 
-
+            matriz[v][u] = 1
         return matriz
-
 
     def para_lista(self, matriz):
         """
-            Converte uma matriz de adjacência em uma lista de adjacência.
+        Converte uma matriz de adjacência em uma lista de adjacência.
 
-            Esta função transforma uma matriz de adjacência, que representa um grafo, em uma lista de adjacência. A lista de adjacência é uma estrutura de dados que armazena, para cada vértice, uma lista de vértices adjacentes, ou seja, os vértices com os quais está conectado.
+        Args:
+            matriz (list of lists): Matriz de adjacência do grafo.
 
-            Parâmetros:
-            ----------
-            matriz : list of list of int
-                Uma matriz de adjacência onde cada elemento matriz[i][j] é 1 se existe uma aresta entre os vértices i e j, e 0 caso contrário.
-
-            Retorna:
-            --------
-            dict
-                Um dicionário representando a lista de adjacência do grafo. As chaves são os vértices do grafo, e os valores são listas dos vértices adjacentes a cada chave.
-
-            Exemplo:
-            --------
-            >>> matriz = [
-            ...     [0, 1, 1, 0],
-            ...     [1, 0, 1, 0],
-            ...     [1, 1, 0, 1],
-            ...     [0, 0, 1, 0]
-            ... ]
-            >>> grafo = Grafo()
-            >>> lista_adj = grafo.lista(matriz)
-            >>> print(lista_adj)
-            {0: [1, 2], 1: [0, 2], 2: [0, 1, 3], 3: [2]}
+        Returns:
+            dict: Lista de adjacência resultante.
         """
         lista_adjacencia = {}
         num_vertices = len(matriz)
@@ -85,13 +41,41 @@ class Grafo():
             for j in range(num_vertices):
                 if matriz[i][j] == 1:
                     lista_adjacencia[i].append(j)
-
         return lista_adjacencia
 
+    def produto_cartesiano(self, matriz1, vertices1, matriz2, vertices2):
+        """
+        Calcula o produto cartesiano de dois grafos dados suas matrizes de adjacência.
+
+        Args:
+            matriz1 (list of lists): Matriz de adjacência do primeiro grafo.
+            vertices1 (int): Número de vértices no primeiro grafo.
+            matriz2 (list of lists): Matriz de adjacência do segundo grafo.
+            vertices2 (int): Número de vértices no segundo grafo.
+
+        Returns:
+            list: Matriz de adjacência do grafo resultante do produto cartesiano.
+        """
+        num_vertices_produto = vertices1 * vertices2
+        matriz_produto = [[0] * num_vertices_produto for _ in range(num_vertices_produto)]
+
+        for i1 in range(vertices1):
+            for j1 in range(vertices1):
+                for i2 in range(vertices2):
+                    for j2 in range(vertices2):
+                        v1 = i1 * vertices2 + i2
+                        v2 = j1 * vertices2 + j2
+                        if (i1 == j1 and matriz2[i2][j2] == 1) or (i2 == j2 and matriz1[i1][j1] == 1):
+                            matriz_produto[v1][v2] = 1
+        
+        return matriz_produto
 
     def print_matriz(self):
+        """
+        Exibe a matriz de adjacência atual do grafo.
+        """
         print('\n\t=================================================================')
-        print("\t\t\t\tMatriz de Adjacência:")
+        print("\t\t\t\tMatriz de Adjacência (G1):")
         print('\t=================================================================\n')
         labels = [x for x in range(self.vertices)]
         print(f'\t\t\t\t   {[x for x in labels]}'.replace('[', '').replace(']', '').replace(',', ' '))
@@ -99,17 +83,36 @@ class Grafo():
             print(f'\t\t\t\t{labels[i]} {row}')
         print('\n\t=================================================================')
 
+    def print_matriz_cartesiano(self, matriz, num_vertices):
+        """
+        Exibe a matriz de adjacência do grafo resultante do produto cartesiano.
+
+        Args:
+            matriz (list of lists): Matriz de adjacência do grafo produto cartesiano.
+            num_vertices (int): Número de vértices no grafo produto cartesiano.
+        """
+        print('\n\t=================================================================')
+        print("\t\tMatriz de Adjacência do Produto Cartesiano (G1 X G2):")
+        print('\t=================================================================\n')
+        labels = [x for x in range(num_vertices)]
+        print(f'\t\t\t\t   {[x for x in labels]}'.replace('[', '').replace(']', '').replace(',', ' '))
+        for i, row in zip(labels, matriz):
+            print(f'\t\t\t\t{labels[i]} {row}')
+        print('\n\t=================================================================')
 
     def print_lista(self):
+        """
+        Exibe a lista de adjacência atual do grafo.
+        """
         print('\n\n\t=================================================================')
-        print("\t\t\t\tLista de Adjacência:")
+        print("\t\t\t\tLista de Adjacência (G1):")
         print('\t=================================================================\n')
         print(f'\t\t{self.lista}')
         print('\n\t=================================================================')
 
     def PRINT(self):
-        print(f'\nParâmetros de Entrada: \
-            \n\n\tArestas:{self.arestas} \
-            \n\tVértices: {self.vertices}')
+        """
+        Exibe tanto a matriz de adjacência quanto a lista de adjacência atuais do grafo.
+        """
         self.print_matriz()
         self.print_lista()
